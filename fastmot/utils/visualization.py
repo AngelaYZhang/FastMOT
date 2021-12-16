@@ -2,14 +2,16 @@ import colorsys
 import numpy as np
 import cv2
 from .rect import get_center
-
+from ..models.label import get_label_name
 
 GOLDEN_RATIO = 0.618033988749895
 
 
-def draw_tracks(frame, tracks, show_flow=False, show_cov=False,
+def draw_tracks(frame, tracks, detections, show_flow=False, show_cov=False,
                 show_traj=False):
     for track in tracks:
+        #draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, str(track.label))    
+        #draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, 'ID:' + str(track.trk_id) + ' Class:' + get_label_name(track.label))
         draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, str(track.trk_id))
         if show_traj:
             draw_trajectory(frame, track.bboxes, track.trk_id)
@@ -17,6 +19,9 @@ def draw_tracks(frame, tracks, show_flow=False, show_cov=False,
             draw_feature_match(frame, track.prev_keypoints, track.keypoints, (0, 255, 255))
         if show_cov:
             draw_covariance(frame, track.tlbr, track.state[1])
+    # for det in detections:
+    #     text = f'{det.label}: {det.conf:.2f}'
+    #     draw_bbox(frame, det.tlbr, (255, 255, 255), 1, text)
 
 
 def draw_detections(frame, detections, color=(255, 255, 255), show_conf=False):
@@ -135,7 +140,7 @@ class Visualizer:
 
     def render(self, frame, tracks, detections, klt_bboxes, prev_bg_keypoints, bg_keypoints):
         """Render visualizations onto the frame."""
-        draw_tracks(frame, tracks, show_flow=self.draw_obj_flow,
+        draw_tracks(frame, tracks, detections, show_flow=self.draw_obj_flow,
                     show_cov=self.draw_covariance,
                     show_traj=self.draw_trajectory)
         if self.draw_detections:

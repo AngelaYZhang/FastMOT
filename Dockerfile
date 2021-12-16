@@ -62,9 +62,9 @@ RUN cmake \
     -DWITH_TBB=ON \
     -DWITH_LIBV4L=ON \
     -DWITH_CUDA=OFF \
-    -DWITH_GSTREAMER=ON \
+    -DWITH_GSTREAMER=OFF \
     -DWITH_GSTREAMER_0_10=OFF \
-    -DWITH_FFMPEG=OFF .. && \
+    -DWITH_FFMPEG=ON .. && \
     make -j$(nproc) && \
     make install && \
     ldconfig && \

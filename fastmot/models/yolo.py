@@ -168,6 +168,17 @@ The following models are supported but not provided.
 Modify paths, # classes, input shape, and anchors according to your Darknet cfg for custom model.
 """
 
+class YOLOv4Original(YOLO):
+    ENGINE_PATH = Path(__file__).parent / 'yolov4.trt'
+    MODEL_PATH = Path(__file__).parent /  'yolov4.onnx'
+    NUM_CLASSES = 80
+    INPUT_SHAPE = (3, 608, 608)
+    LAYER_FACTORS = [8, 16, 32]
+    SCALES = [1.2, 1.1, 1.05]
+    ANCHORS = [[12,16, 19,36, 40,28],
+               [36,75, 76,55, 72,146],
+               [142,110, 192,243, 459,401]]
+
 class YOLOv4CSP(YOLO):
     ENGINE_PATH = Path(__file__).parent / 'yolov4-csp.trt'
     MODEL_PATH = Path(__file__).parent /  'yolov4-csp.onnx'
@@ -256,7 +267,7 @@ class YOLOv4P6(YOLO):
 class YOLOv4Tiny(YOLO):
     ENGINE_PATH = Path(__file__).parent / 'yolov4-tiny.trt'
     MODEL_PATH = Path(__file__).parent /  'yolov4-tiny.onnx'
-    NUM_CLASSES = 1
+    NUM_CLASSES = 80
     INPUT_SHAPE = (3, 416, 416)
     LAYER_FACTORS = [32, 16]
     SCALES = [1.05, 1.05]

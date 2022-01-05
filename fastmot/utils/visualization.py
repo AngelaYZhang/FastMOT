@@ -11,8 +11,8 @@ def draw_tracks(frame, tracks, detections, show_flow=False, show_cov=False,
                 show_traj=False):
     for track in tracks:
         #draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, str(track.label))    
-        #draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, 'ID:' + str(track.trk_id) + ' Class:' + get_label_name(track.label))
-        draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, str(track.trk_id))
+        draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, 'ID:' + str(track.trk_id) + ' Class:' + get_label_name(track.label))
+        #draw_bbox(frame, track.tlbr, get_color(track.trk_id), 2, str(track.trk_id))
         if show_traj:
             draw_trajectory(frame, track.bboxes, track.trk_id)
         if show_flow:

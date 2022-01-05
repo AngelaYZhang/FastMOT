@@ -105,6 +105,9 @@ class MultiTracker:
 
         self.klt_bboxes = {}
         self.homography = None
+        
+        #Add for total object count, count the number of confirmed track (with reported log message of 'found')
+        self.count_found = 0
 
     def reset(self, dt):
         """Reset the tracker for new input context.
@@ -264,6 +267,7 @@ class MultiTracker:
             is_valid = not occluded_det_mask[det_id]
             if track.hits == self.confirm_hits - 1:
                 LOGGER.info(f"{'Found:':<14}{track}")
+                self.count_found += 1
             if ios(next_tlbr, self.frame_rect) < 0.5:
                 is_valid = False
                 if track.confirmed:

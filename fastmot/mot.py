@@ -99,6 +99,7 @@ class MOT:
         self.tracker = MultiTracker(self.size, self.extractors[0].metric, **vars(tracker_cfg))
         self.visualizer = Visualizer(**vars(visualizer_cfg))
         self.frame_count = 0
+        self.total_objects = 0
 
     def visible_tracks(self):
         """Retrieve visible tracks from the tracker
@@ -191,13 +192,31 @@ class MOT:
     def _draw(self, frame, detections):
         visible_tracks = list(self.visible_tracks())
         self.visualizer.render(frame, visible_tracks, detections, self.tracker.klt_bboxes.values(),
-                               self.tracker.flow.prev_bg_keypoints, self.tracker.flow.bg_keypoints)        
+                               self.tracker.flow.prev_bg_keypoints, self.tracker.flow.bg_keypoints)
         cv2.putText(frame, f'Visible: {len(visible_tracks)}', (30, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
-        
-        track_list = list(track.trk_id for track in self.tracker.tracks.values())
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2, cv2.LINE_AA)
+                    
+        """
+	#Print total count
+        if visible_tracks:
+                self.total_objects = visible_tracks[0]._count - 1
+                if visible_tracks[0]._count == 1:
+                        self.total_objects = 1
+        """
+        self.total_objects = self.tracker.count_found
+             
+        cv2.putText(frame, f'Total: {self.total_objects}', (30, 60),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2, cv2.LINE_AA)
+
+	#Print total count (2nd approach)
+        # track_list = list(track.trk_id for track in self.tracker.tracks.values())
         # track_list = []
         # for track in self.tracker.tracks.values():
         #     track_list.append(track.trk_id)
-        cv2.putText(frame, f'Total: {max(track_list)}', (30, 60),
-                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)        
+	# if not track_list:
+	#    count = 0
+	# else:
+	#    count = max(track_list)
+
+        # cv2.putText(frame, f'Total: {count}', (30, 60),
+        #              cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)        

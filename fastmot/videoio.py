@@ -9,7 +9,7 @@ import cv2
 
 
 LOGGER = logging.getLogger(__name__)
-WITH_GSTREAMER = False
+WITH_GSTREAMER = True
 
 
 class Protocol(Enum):

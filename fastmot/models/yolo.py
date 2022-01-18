@@ -162,6 +162,27 @@ class YOLOv4(YOLO):
                [54,186, 69,268, 89,369],
                [126,491, 194,314, 278,520]]
 
+class YOLOv4TinyCrowdhuman(YOLO):
+    ENGINE_PATH = Path(__file__).parent / 'yolov4-tiny-crowdhuman-416x416_best.trt'
+    MODEL_PATH = Path(__file__).parent /  'yolov4-tiny-crowdhuman-416x416_best.onnx'
+    NUM_CLASSES = 2
+    INPUT_SHAPE = (3, 416, 416)
+    LAYER_FACTORS = [32, 16]
+    SCALES = [1.05, 1.05]
+    ANCHORS = [[41,156,  69,241, 140,311],
+               [14, 36,  26, 80,  41,156]]
+
+class YOLOv4Tiny3lCrowdhuman(YOLO):
+    ENGINE_PATH = Path(__file__).parent / 'yolov4-tiny-3l-crowdhuman-416x416_best.trt'
+    MODEL_PATH = Path(__file__).parent /  'yolov4-tiny-3l-crowdhuman-416x416_best.onnx'
+    NUM_CLASSES = 2
+    INPUT_SHAPE = (3, 416, 416)
+    LAYER_FACTORS = [32, 16, 8]
+    SCALES = [1.05, 1.05, 1.05]
+    ANCHORS = [[46,203,  80,265, 155,317],
+               [28, 49,  30,123,  58,106],
+               [8, 15,  13, 34,  18, 75]]
+
 
 """
 The following models are supported but not provided.

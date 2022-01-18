@@ -6,10 +6,10 @@ from collections.abc import Sequence
 `unlabled` (id = 0) is replaced with `head` for CrowdHuman
 These are different from the default 80-class COCO labels used by YOLO
 """
-"""
+
 _label_map = (
-    'head',
-    'person',
+    'head(CH)',
+    'person(CH)',
     'bicycle',
     'car',
     'motorcycle',
@@ -104,7 +104,7 @@ _label_map = (
 """
 #For yolov4 classes
 _label_map = (
-        'person',
+        'person(v4)',
         'bicycle',
         'car',
         'motorbike',
@@ -185,7 +185,7 @@ _label_map = (
         'hair drier',
         'toothbrush',
 )
-
+"""
 
 def get_label_name(class_id):
     """Look up label name given a class ID."""

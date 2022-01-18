@@ -267,6 +267,9 @@ class MultiTracker:
             is_valid = not occluded_det_mask[det_id]
             if track.hits == self.confirm_hits - 1:
                 LOGGER.info(f"{'Found:':<14}{track}")
+                #self.count_found += 1
+            elif track.hits == self.confirm_hits:
+                LOGGER.info(f"{'Confirmed (reached confirm_hits):':<14}{track}")
                 self.count_found += 1
             if ios(next_tlbr, self.frame_rect) < 0.5:
                 is_valid = False

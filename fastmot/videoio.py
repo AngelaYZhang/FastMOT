@@ -59,9 +59,9 @@ class VideoIO:
         self.size = size
         self.input_uri = input_uri
         self.output_uri = output_uri
-        self.resolution = (1280, 720)
+        self.resolution = resolution
         assert frame_rate > 0
-        self.frame_rate = 30
+        self.frame_rate = frame_rate
         assert buffer_size >= 1
         self.buffer_size = buffer_size
         assert proc_fps > 0

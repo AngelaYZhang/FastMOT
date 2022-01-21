@@ -1,10 +1,10 @@
 {   
-    "resize_to": [1280, 720],
+    "resize_to": [640, 480],
 
     "stream_cfg": {
-        "resolution": [1920, 1080],
-        "frame_rate": 30,
-        "buffer_size": 10
+        "resolution": [1280, 720],
+        "frame_rate": 60,
+        "buffer_size": 5
     },
 
     "mot_cfg": {
@@ -50,7 +50,7 @@
             "duplicate_thresh": 0.8,
             "occlusion_thresh": 0.7,
             "conf_thresh": 0.5,
-            "confirm_hits": 1,
+            "confirm_hits": 10,
             "history_size": 50,
 
             "kalman_filter_cfg": {

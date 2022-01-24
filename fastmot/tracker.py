@@ -427,3 +427,7 @@ class MultiTracker:
         for trk_id in dup_ids:
             LOGGER.debug(f"{'Duplicate:':<14}{self.tracks[trk_id]}")
             del self.tracks[trk_id]
+
+    def reset_count_found(self):
+        self.count_found = 0
+        print("Total count is reset")

@@ -98,8 +98,11 @@ def main():
 
                 if args.show:
                     cv2.imshow('Video', frame)
-                    if cv2.waitKey(1) & 0xFF == 27:
+                    user_key = cv2.waitKey(1) & 0xFF 
+                    if user_key == 27:
                         break
+                    elif user_key == 114:
+                        mot.tracker.reset_count_found()
                 if args.output_uri is not None:
                     stream.write(frame)
     finally:

@@ -193,8 +193,11 @@ class MOT:
         visible_tracks = list(self.visible_tracks())
         self.visualizer.render(frame, visible_tracks, detections, self.tracker.klt_bboxes.values(),
                                self.tracker.flow.prev_bg_keypoints, self.tracker.flow.bg_keypoints)
-        cv2.putText(frame, f'Visible: {len(visible_tracks)}', (30, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2, cv2.LINE_AA)
+        #Count window which displays current objects recognised and count
+        x,y,w,h = 20,20,350,155
+        cv2.rectangle(frame,(x,y), (x+w,y+h), (255,255,255),-1)
+        cv2.putText(frame, f'Visible:{len(visible_tracks)}', (30, 80),
+                    cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 4, cv2.LINE_AA)
                     
         """
 	#Print total count
@@ -205,8 +208,8 @@ class MOT:
         """
         self.total_objects = self.tracker.count_found
              
-        cv2.putText(frame, f'Total: {self.total_objects}', (30, 60),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2, cv2.LINE_AA)
+        cv2.putText(frame, f'Total:{self.total_objects}', (30, 160),
+                    cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 4, cv2.LINE_AA)
 
 	#Print total count (2nd approach)
         # track_list = list(track.trk_id for track in self.tracker.tracks.values())

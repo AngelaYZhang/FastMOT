@@ -17,7 +17,7 @@ def main():
     optional = parser._action_groups.pop()
     required = parser.add_argument_group('required arguments')
     group = parser.add_mutually_exclusive_group()
-    required.add_argument('-i', '--input-uri', metavar="URI", required=True, help=
+    optional.add_argument('-i', '--input-uri', metavar="URI", help=
                           'URI to input stream\n'
                           '1) image sequence (e.g. %%06d.jpg)\n'
                           '2) video file (e.g. file.mp4)\n'
@@ -40,6 +40,11 @@ def main():
     group.add_argument('-v', '--verbose', action='store_true', help='increase output verbosity')
     parser._action_groups.append(optional)
     args = parser.parse_args()
+    args.mot=True
+    args.show=True
+    args.input_uri='csi://0'
+    args.config='/home/geodrones/Documents/FastMOT/cfg/nano_v4tinyCH_fastobj.json'
+    
     if args.txt is not None and not args.mot:
         raise parser.error('argument -t/--txt: not allowed without argument -m/--mot')
 
@@ -64,13 +69,18 @@ def main():
             fastmot.models.set_label_map(label_map)
 
     stream = fastmot.VideoIO(config.resize_to, args.input_uri, args.output_uri, **vars(config.stream_cfg))
+    #stream2 = fastmot.VideoIO(config.resize_to, 'csi://1', args.output_uri, **vars(config.stream_cfg))
 
     mot = None
+    #mot2 = None
     txt = None
     if args.mot:
         draw = args.show or args.output_uri is not None
         mot = fastmot.MOT(config.resize_to, **vars(config.mot_cfg), draw=draw)
         mot.reset(stream.cap_dt)
+        
+        #mot2 = fastmot.MOT(config.resize_to, **vars(config.mot_cfg), draw=draw)
+        #mot2.reset(stream.cap_dt)
     if args.txt is not None:
         Path(args.txt).parent.mkdir(parents=True, exist_ok=True)
         txt = open(args.txt, 'w')
@@ -83,11 +93,13 @@ def main():
         with Profiler('app') as prof:
             while not args.show or cv2.getWindowProperty('Video', 0) >= 0:
                 frame = stream.read()
+                #frame2 = stream2.read()
                 if frame is None:
                     break
 
                 if args.mot:
                     mot.step(frame)
+                    #mot2.step(frame)
                     if txt is not None:
                         for track in mot.visible_tracks():
                             tl = track.tlbr[:2] / config.resize_to * stream.resolution
@@ -97,11 +109,14 @@ def main():
                                       f'{w:.6f},{h:.6f},-1,-1,-1\n')
 
                 if args.show:
+                    #two_stream_stacked = cv2.hconcat([frame,frame2])
+                
                     cv2.imshow('Video', frame)
+                    #cv2.imshow('Video', two_stream_stacked)
                     user_key = cv2.waitKey(1) & 0xFF 
-                    if user_key == 27:
+                    if user_key == 27: #press Esc to break
                         break
-                    elif user_key == 114:
+                    elif user_key == 114: #press 'r' to reset count
                         mot.tracker.reset_count_found()
                 if args.output_uri is not None:
                     stream.write(frame)

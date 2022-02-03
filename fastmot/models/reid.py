@@ -100,6 +100,13 @@ class OSNet025(ReID):
     METRIC = 'euclidean'
 
 
+class market_sbs_R101(ReID):
+    ENGINE_PATH = Path(__file__).parent / 'baseline_R101-ibn.trt'
+    MODEL_PATH = Path(__file__).parent / 'baseline_R101-ibn.onnx'
+    INPUT_SHAPE = (3, 384, 128)
+    OUTPUT_LAYOUT = 2048
+    METRIC = 'cosine'
+
 class OSNet10(ReID):
     """Multi-source model trained on MSMT17, DukeMTMC, and CUHK03, not provided."""
     ENGINE_PATH = Path(__file__).parent / 'osnet_x1_0_msdc.trt'

@@ -185,9 +185,10 @@ class VideoIO:
         elif self.protocol == Protocol.CSI:
             if 'nvarguscamerasrc' in gst_elements:
                 pipeline = (
-                    'nvarguscamerasrc sensor_id=%s ! '
+                    'nvarguscamerasrc sensor_mode = 4 sensor_id=%s ! '
                     'video/x-raw(memory:NVMM), width=%d, height=%d, '
                     'format=NV12, framerate=%d/1 ! '
+                    'nvvidconv flip-method=2 ! '
                     % (
                         self.input_uri[6:],
                         *self.resolution,

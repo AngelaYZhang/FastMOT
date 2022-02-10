@@ -12,12 +12,14 @@ import fastmot.models
 from fastmot.utils import ConfigDecoder, Profiler
 
 
-def motcount(inputurl):
+def motcount(inputurl, count_global, process_number):
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     optional = parser._action_groups.pop()
     required = parser.add_argument_group('required arguments')
     group = parser.add_mutually_exclusive_group()
-    optional.add_argument('-i', '--input-uri', metavar="URI", help=
+    
+    """
+    required.add_argument('-i', '--input-uri', metavar="URI", required=True, help=
                           'URI to input stream\n'
                           '1) image sequence (e.g. %%06d.jpg)\n'
                           '2) video file (e.g. file.mp4)\n'
@@ -25,6 +27,7 @@ def motcount(inputurl):
                           '4) USB camera (e.g. /dev/video0)\n'
                           '5) RTSP stream (e.g. rtsp://<user>:<password>@<ip>:<port>/<path>)\n'
                           '6) HTTP stream (e.g. http://<user>:<password>@<ip>:<port>/<path>)\n')
+    """
     optional.add_argument('-c', '--config', metavar="FILE",
                           default=Path(__file__).parent / 'cfg' / 'mot.json',
                           help='path to JSON configuration file')
@@ -42,7 +45,6 @@ def motcount(inputurl):
     args = parser.parse_args()
     args.mot=True
     args.show=True
-    args.input_uri='csi://0'
     args.config='/home/geodrones/Documents/FastMOT/cfg/nano_v4tinyCH_fastobj.json'
 
     args.input_uri = inputurl
@@ -78,7 +80,7 @@ def motcount(inputurl):
     txt = None
     if args.mot:
         draw = args.show or args.output_uri is not None
-        mot = fastmot.MOT(config.resize_to, **vars(config.mot_cfg), draw=draw)
+        mot = fastmot.MOT(config.resize_to, count_global, **vars(config.mot_cfg), draw=draw)
         mot.reset(stream.cap_dt)
         
         #mot2 = fastmot.MOT(config.resize_to, **vars(config.mot_cfg), draw=draw)
@@ -88,6 +90,14 @@ def motcount(inputurl):
         txt = open(args.txt, 'w')
     if args.show:
         cv2.namedWindow('Video', cv2.WINDOW_AUTOSIZE)
+
+        if process_number.value == 1:
+            x = 200
+            y = 350
+        else:
+            x = 1100
+            y = 350
+        cv2.moveWindow('Video', x, y)
 
     logger.info('Starting video capture...')
     stream.start_capture()
@@ -100,7 +110,7 @@ def motcount(inputurl):
                     break
 
                 if args.mot:
-                    mot.step(frame)
+                    mot.step(frame, count_global)
                     #mot2.step(frame)
                     if txt is not None:
                         for track in mot.visible_tracks():
@@ -119,7 +129,7 @@ def motcount(inputurl):
                     if user_key == 27: #press Esc to break
                         break
                     elif user_key == 114: #press 'r' to reset count
-                        mot.tracker.reset_count_found()
+                        mot.tracker.reset_count_found(count_global)
                 if args.output_uri is not None:
                     stream.write(frame)
     finally:
@@ -135,17 +145,23 @@ def motcount(inputurl):
         logger.info('Average FPS: %d', avg_fps)
         mot.print_timing_info()
 
-from multiprocessing import Process
+from multiprocessing import Process, Value
 
 def main():
-    p1 = Process(target=motcount, args=('csi://0',))
+
+    count_global = Value('i', 0)
+
+    process_one = Value('i', 1)
+    process_two = Value('i', 2)    
+    
+    p1 = Process(target=motcount, args=('csi://0', count_global, process_one, ))
     p1.start()
     
-    p2 = Process(target=motcount, args=('csi://1',))
+    p2 = Process(target=motcount, args=('csi://1', count_global, process_two, ))
     p2.start()
     
-    p1.join()
-    p2.join()
+    #p1.join()
+    #p2.join()
 
 if __name__ == '__main__':
     main()

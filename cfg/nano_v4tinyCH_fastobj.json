@@ -1,5 +1,5 @@
 {   
-    "resize_to": [640, 360],
+    "resize_to": [720, 480],
 
     "stream_cfg": {
         "resolution": [1280, 720],
@@ -45,7 +45,7 @@
             "age_penalty": 2,
             "motion_weight": 0.2,
             "max_assoc_cost": 0.8,
-            "max_reid_cost": 0.7,
+            "max_reid_cost": 0.6,
             "iou_thresh": 0.3,
             "duplicate_thresh": 0.8,
             "occlusion_thresh": 0.7,

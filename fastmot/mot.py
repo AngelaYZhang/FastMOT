@@ -23,7 +23,7 @@ class DetectorType(Enum):
 
 
 class MOT:
-    def __init__(self, size,
+    def __init__(self, size, count_global,
                  detector_type='YOLO',
                  detector_frame_skip=5,
                  class_ids=(1,),
@@ -96,7 +96,7 @@ class MOT:
 
         LOGGER.info('Loading feature extractor models...')
         self.extractors = [FeatureExtractor(**vars(cfg)) for cfg in feature_extractor_cfgs]
-        self.tracker = MultiTracker(self.size, self.extractors[0].metric, **vars(tracker_cfg))
+        self.tracker = MultiTracker(self.size, self.extractors[0].metric, count_global, **vars(tracker_cfg))
         self.visualizer = Visualizer(**vars(visualizer_cfg))
         self.frame_count = 0
         self.total_objects = 0
@@ -123,7 +123,7 @@ class MOT:
         self.frame_count = 0
         self.tracker.reset(cap_dt)
 
-    def step(self, frame):
+    def step(self, frame, count_global):
         """Runs multiple object tracker on the next frame.
 
         Parameters
@@ -159,13 +159,13 @@ class MOT:
                 embeddings = np.concatenate(embeddings) if len(embeddings) > 1 else embeddings[0]
 
             with Profiler('assoc'):
-                self.tracker.update(self.frame_count, detections, embeddings)
+                self.tracker.update(self.frame_count, detections, embeddings, count_global)
         else:
             with Profiler('track'):
                 self.tracker.track(frame)
 
         if self.draw:
-            self._draw(frame, detections)
+            self._draw(frame, detections, count_global)
         self.frame_count += 1
 
     @staticmethod
@@ -189,7 +189,7 @@ class MOT:
             begin = end
         return cls_bboxes
 
-    def _draw(self, frame, detections):
+    def _draw(self, frame, detections, count_global):
         visible_tracks = list(self.visible_tracks())
         self.visualizer.render(frame, visible_tracks, detections, self.tracker.klt_bboxes.values(),
                                self.tracker.flow.prev_bg_keypoints, self.tracker.flow.bg_keypoints)
@@ -206,7 +206,8 @@ class MOT:
                 if visible_tracks[0]._count == 1:
                         self.total_objects = 1
         """
-        self.total_objects = self.tracker.count_found
+        #self.total_objects = self.tracker.count_found
+        self.total_objects = count_global.value
              
         cv2.putText(frame, f'Total:{self.total_objects}', (30, 160),
                     cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 4, cv2.LINE_AA)

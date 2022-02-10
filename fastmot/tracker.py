@@ -16,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MultiTracker:
-    def __init__(self, size, metric,
+    def __init__(self, size, metric, count_global,
                  max_age=6,
                  age_penalty=2,
                  motion_weight=0.2,
@@ -107,7 +107,7 @@ class MultiTracker:
         self.homography = None
         
         #Add for total object count, count the number of confirmed track (with reported log message of 'found')
-        self.count_found = 0
+        #self.count_found = 0
 
     def reset(self, dt):
         """Reset the tracker for new input context.
@@ -185,7 +185,7 @@ class MultiTracker:
                     LOGGER.info(f"{'Out:':<14}{track}")
                 self._mark_lost(trk_id)
 
-    def update(self, frame_id, detections, embeddings):
+    def update(self, frame_id, detections, embeddings, count_global):
         """Associates detections to tracklets based on motion and feature embeddings.
 
         Parameters
@@ -268,9 +268,11 @@ class MultiTracker:
             if track.hits == self.confirm_hits - 1:
                 LOGGER.info(f"{'Found:':<14}{track}")
                 #self.count_found += 1
+                #count_global.value += 1
             elif track.hits == self.confirm_hits:
                 LOGGER.info(f"{'Confirmed (reached confirm_hits):':<14}{track}")
-                self.count_found += 1
+                #self.count_found += 1
+                count_global.value += 1
             if ios(next_tlbr, self.frame_rect) < 0.5:
                 is_valid = False
                 if track.confirmed:
@@ -428,6 +430,7 @@ class MultiTracker:
             LOGGER.debug(f"{'Duplicate:':<14}{self.tracks[trk_id]}")
             del self.tracks[trk_id]
 
-    def reset_count_found(self):
-        self.count_found = 0
+    def reset_count_found(self, count_global):
+        #self.count_found = 0
+        count_global.value = 0
         print("Total count is reset")

@@ -24,8 +24,8 @@ class Protocol(Enum):
 class VideoIO:
     def __init__(self, size, input_uri,
                  output_uri=None,
-                 resolution=(1920, 1080),
-                 frame_rate=30,
+                 resolution=(1280, 720),
+                 frame_rate=59.999999,
                  buffer_size=10,
                  proc_fps=30):
         """Class for video capturing and output saving.

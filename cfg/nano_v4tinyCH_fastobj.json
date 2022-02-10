@@ -1,5 +1,5 @@
 {   
-    "resize_to": [1920, 1080],
+    "resize_to": [640, 360],
 
     "stream_cfg": {
         "resolution": [1280, 720],
@@ -9,7 +9,7 @@
 
     "mot_cfg": {
         "detector_type": "YOLO", 
-        "detector_frame_skip": 3,
+        "detector_frame_skip": 10,
         "class_ids": [1],
 
         "ssd_detector_cfg": {

@@ -3,7 +3,7 @@
 
     "stream_cfg": {
         "resolution": [1280, 720],
-        "frame_rate": 60,
+        "frame_rate": 30,
         "buffer_size": 5
     },
 
@@ -50,7 +50,7 @@
             "duplicate_thresh": 0.8,
             "occlusion_thresh": 0.7,
             "conf_thresh": 0.5,
-            "confirm_hits": 10,
+            "confirm_hits": 5,
             "history_size": 100,
 
             "kalman_filter_cfg": {
